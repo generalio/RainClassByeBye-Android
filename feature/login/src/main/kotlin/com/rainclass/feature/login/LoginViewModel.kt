@@ -6,10 +6,12 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rainclass.core.network.LoginHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class LoginUiState(
     val qrCodeBitmap: ImageBitmap? = null,
@@ -34,7 +36,9 @@ class LoginViewModel(
             try {
                 val result = loginHelper.getQRCode()
                 currentUuid = result.uuid
-                val bitmap = BitmapFactory.decodeByteArray(result.pngBytes, 0, result.pngBytes.size)
+                val bitmap = withContext(Dispatchers.Default) {
+                    BitmapFactory.decodeByteArray(result.pngBytes, 0, result.pngBytes.size)
+                }
                 _uiState.value = LoginUiState(
                     qrCodeBitmap = bitmap?.asImageBitmap(),
                     isScanning = true,
@@ -42,7 +46,10 @@ class LoginViewModel(
                 )
                 startPolling()
             } catch (e: Exception) {
-                _uiState.value = LoginUiState(error = e.message ?: "获取二维码失败")
+                _uiState.value = LoginUiState(
+                    error = "获取二维码失败: ${e.message}",
+                    statusText = "获取失败，请重试"
+                )
             }
         }
     }
