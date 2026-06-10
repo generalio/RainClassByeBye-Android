@@ -7,20 +7,20 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filterIsInstance
 
 class RainNavigationResultBus internal constructor() {
-    @PublishedApi
-    internal val events = MutableSharedFlow<Any>(extraBufferCapacity = 1)
+  @PublishedApi
+  internal val events = MutableSharedFlow<Any>(extraBufferCapacity = 1)
 
-    fun send(result: Any) {
-        events.tryEmit(result)
-    }
+  fun send(result: Any) {
+    events.tryEmit(result)
+  }
 
-    suspend inline fun <reified T : Any> collect(noinline onResult: (T) -> Unit) {
-        events.filterIsInstance<T>().collect { onResult(it) }
-    }
+  suspend inline fun <reified T : Any> collect(noinline onResult: (T) -> Unit) {
+    events.filterIsInstance<T>().collect { onResult(it) }
+  }
 }
 
 val LocalRainNavigationResultBus = staticCompositionLocalOf<RainNavigationResultBus> {
-    error("RainNavigationResultBus 未提供，请在 RainNavHost 内使用")
+  error("RainNavigationResultBus 未提供，请在 RainNavHost 内使用")
 }
 
 /**
@@ -42,8 +42,8 @@ val LocalRainNavigationResultBus = staticCompositionLocalOf<RainNavigationResult
  */
 @Composable
 inline fun <reified T : Any> RainResultEffect(noinline onResult: (T) -> Unit) {
-    val resultBus = LocalRainNavigationResultBus.current
-    LaunchedEffect(resultBus) {
-        resultBus.collect(onResult)
-    }
+  val resultBus = LocalRainNavigationResultBus.current
+  LaunchedEffect(resultBus) {
+    resultBus.collect(onResult)
+  }
 }

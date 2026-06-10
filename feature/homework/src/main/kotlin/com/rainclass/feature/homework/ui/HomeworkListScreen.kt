@@ -34,77 +34,77 @@ import androidx.compose.foundation.lazy.items
 
 @Composable
 fun HomeworkListScreen(
-    cid: Long,
-    viewModel: HomeworkViewModel,
-    onBackClick: () -> Unit,
-    onHomeworkClick: (Long, Long) -> Unit // cid, leafId
+  cid: Long,
+  viewModel: HomeworkViewModel,
+  onBackClick: () -> Unit,
+  onHomeworkClick: (Long, Long) -> Unit // cid, leafId
 ) {
-    val uiState by viewModel.listState.collectAsState()
+  val uiState by viewModel.listState.collectAsState()
 
-    LaunchedEffect(cid) { viewModel.loadList(cid) }
+  LaunchedEffect(cid) { viewModel.loadList(cid) }
 
-    Scaffold(
-        topBar = { RainClassTopBar(title = "作业列表", onBackClick = onBackClick) }
-    ) { padding ->
-        when {
-            uiState.isLoading -> LoadingIndicator(modifier = Modifier.padding(padding))
-            uiState.error != null -> ErrorMessage(uiState.error!!, modifier = Modifier.padding(padding))
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.padding(padding),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    uiState.chapters.forEach { chapter ->
-                        item {
-                            Text(
-                                text = chapter.name,
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(vertical = 8.dp)
-                            )
-                        }
-                        items(chapter.sectionLeafList) { leaf ->
-                            HomeworkItem(leaf = leaf, onClick = { onHomeworkClick(cid, leaf.id) })
-                        }
-                    }
-                }
+  Scaffold(
+    topBar = { RainClassTopBar(title = "作业列表", onBackClick = onBackClick) }
+  ) { padding ->
+    when {
+      uiState.isLoading -> LoadingIndicator(modifier = Modifier.padding(padding))
+      uiState.error != null -> ErrorMessage(uiState.error!!, modifier = Modifier.padding(padding))
+      else -> {
+        LazyColumn(
+          modifier = Modifier.padding(padding),
+          contentPadding = PaddingValues(16.dp),
+          verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+          uiState.chapters.forEach { chapter ->
+            item {
+              Text(
+                text = chapter.name,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(vertical = 8.dp)
+              )
             }
+            items(chapter.sectionLeafList) { leaf ->
+              HomeworkItem(leaf = leaf, onClick = { onHomeworkClick(cid, leaf.id) })
+            }
+          }
         }
+      }
     }
+  }
 }
 
 @Composable
 private fun HomeworkItem(leaf: LeafNode, onClick: () -> Unit) {
-    val dateFormat = remember { SimpleDateFormat("MM-dd HH:mm", Locale.getDefault()) }
-    Card(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(leaf.name, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
-                StatusChip(
-                    text = if (leaf.isAssessed) "已完成" else "未完成",
-                    color = if (leaf.isAssessed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
-                )
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text(
-                    text = if (leaf.leafType == 5) "作业" else "教学活动",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                if (leaf.scoreDeadline > 0) {
-                    Text(
-                        text = "截止: ${dateFormat.format(Date(leaf.scoreDeadline))}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+  val dateFormat = remember { SimpleDateFormat("MM-dd HH:mm", Locale.getDefault()) }
+  Card(
+    onClick = onClick,
+    modifier = Modifier.fillMaxWidth(),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+  ) {
+    Column(modifier = Modifier.padding(16.dp)) {
+      Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(leaf.name, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+        StatusChip(
+          text = if (leaf.isAssessed) "已完成" else "未完成",
+          color = if (leaf.isAssessed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
+        )
+      }
+      Spacer(modifier = Modifier.height(4.dp))
+      Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Text(
+          text = if (leaf.leafType == 5) "作业" else "教学活动",
+          style = MaterialTheme.typography.labelSmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        if (leaf.scoreDeadline > 0) {
+          Text(
+            text = "截止: ${dateFormat.format(Date(leaf.scoreDeadline))}",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+          )
         }
+      }
     }
+  }
 }

@@ -7,34 +7,34 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonTransformingSerializer
 
 internal object SafeCourseDataSerializer : JsonTransformingSerializer<CourseData>(CourseData.serializer()) {
-    override fun transformDeserialize(element: JsonElement): JsonElement {
-        return if (element is JsonObject) element else JsonObject(emptyMap())
-    }
+  override fun transformDeserialize(element: JsonElement): JsonElement {
+    return if (element is JsonObject) element else JsonObject(emptyMap())
+  }
 }
 
 @Serializable
 data class CourseInfoResponse(
-    val code: Int = 0,
-    val msg: String = "",
-    val errcode: Int = 0,
-    val errmsg: String = "",
-    @SerialName("data")
-    @Serializable(with = SafeCourseDataSerializer::class)
-    val courseData: CourseData = CourseData()
+  val code: Int = 0,
+  val msg: String = "",
+  val errcode: Int = 0,
+  val errmsg: String = "",
+  @SerialName("data")
+  @Serializable(with = SafeCourseDataSerializer::class)
+  val courseData: CourseData = CourseData()
 )
 
 @Serializable
 data class CourseData(
-    val list: List<CourseNode> = emptyList()
+  val list: List<CourseNode> = emptyList()
 )
 
 @Serializable
 data class CourseNode(
-    @SerialName("classroom_id") val classroomId: Long = 0,
-    val name: String = "",
-    val course: CourseBasic = CourseBasic(),
-    val teacher: Teacher = Teacher(),
-    @SerialName("students_count") val studentsCount: Int = 0
+  @SerialName("classroom_id") val classroomId: Long = 0,
+  val name: String = "",
+  val course: CourseBasic = CourseBasic(),
+  val teacher: Teacher = Teacher(),
+  @SerialName("students_count") val studentsCount: Int = 0
 )
 
 @Serializable

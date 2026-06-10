@@ -6,6 +6,6 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface ExamTokenApi {
-    @POST("v/exam/gen_token")
-    suspend fun examGenToken(@Body request: ExamGenTokenRequest): ExamGenTokenResponse
+  @POST("v/exam/gen_token")
+  suspend fun examGenToken(@Body request: ExamGenTokenRequest): ExamGenTokenResponse
 }

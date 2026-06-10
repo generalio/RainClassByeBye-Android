@@ -9,32 +9,32 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class ExamViewModel(
-    private val examRunnerFactory: () -> ExamRunner
+  private val examRunnerFactory: () -> ExamRunner
 ) : ViewModel() {
-    private var runner: ExamRunner? = null
+  private var runner: ExamRunner? = null
 
-    private val _progress = MutableStateFlow(ExamProgress())
-    val progress: StateFlow<ExamProgress> = _progress
+  private val _progress = MutableStateFlow(ExamProgress())
+  val progress: StateFlow<ExamProgress> = _progress
 
-    fun startExam(cid: Long, examId: Long, isResume: Boolean = false) {
-        val newRunner = examRunnerFactory()
-        runner = newRunner
+  fun startExam(cid: Long, examId: Long, isResume: Boolean = false) {
+    val newRunner = examRunnerFactory()
+    runner = newRunner
 
-        viewModelScope.launch {
-            newRunner.progress.collect { _progress.value = it }
-        }
-
-        viewModelScope.launch {
-            newRunner.execute(cid, examId, isResume)
-        }
+    viewModelScope.launch {
+      newRunner.progress.collect { _progress.value = it }
     }
 
-    fun cancel() {
-        runner?.cancel()
+    viewModelScope.launch {
+      newRunner.execute(cid, examId, isResume)
     }
+  }
 
-    override fun onCleared() {
-        super.onCleared()
-        runner?.cancel()
-    }
+  fun cancel() {
+    runner?.cancel()
+  }
+
+  override fun onCleared() {
+    super.onCleared()
+    runner?.cancel()
+  }
 }

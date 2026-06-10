@@ -29,67 +29,67 @@ import java.util.Locale
 
 @Composable
 fun HomeworkDetailScreen(
-    cid: Long,
-    leafId: Long,
-    viewModel: HomeworkViewModel,
-    onBackClick: () -> Unit,
-    onStartExam: (Long, Long) -> Unit // cid, examId
+  cid: Long,
+  leafId: Long,
+  viewModel: HomeworkViewModel,
+  onBackClick: () -> Unit,
+  onStartExam: (Long, Long) -> Unit // cid, examId
 ) {
-    val uiState by viewModel.detailState.collectAsState()
-    val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
+  val uiState by viewModel.detailState.collectAsState()
+  val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
 
-    LaunchedEffect(cid, leafId) { viewModel.loadDetail(cid, leafId) }
+  LaunchedEffect(cid, leafId) { viewModel.loadDetail(cid, leafId) }
 
-    Scaffold(
-        topBar = { RainClassTopBar(title = "作业详情", onBackClick = onBackClick) }
-    ) { padding ->
-        when {
-            uiState.isLoading -> LoadingIndicator(modifier = Modifier.padding(padding))
-            uiState.error != null -> ErrorMessage(uiState.error!!, modifier = Modifier.padding(padding))
-            uiState.detail != null -> {
-                val detail = uiState.detail!!
-                val cover = uiState.cover
-                val canStart = cover != null && detail.contentInfo.leafTypeId > 0
+  Scaffold(
+    topBar = { RainClassTopBar(title = "作业详情", onBackClick = onBackClick) }
+  ) { padding ->
+    when {
+      uiState.isLoading -> LoadingIndicator(modifier = Modifier.padding(padding))
+      uiState.error != null -> ErrorMessage(uiState.error!!, modifier = Modifier.padding(padding))
+      uiState.detail != null -> {
+        val detail = uiState.detail!!
+        val cover = uiState.cover
+        val canStart = cover != null && detail.contentInfo.leafTypeId > 0
 
-                Column(
-                    modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    InfoCard(title = detail.name) {
-                        InfoRow("CID", cid.toString())
-                        InfoRow("Leaf ID", detail.id.toString())
-                        InfoRow("Exam ID", detail.contentInfo.leafTypeId.toString())
-                        if (detail.publishTime > 0) InfoRow("发布时间", dateFormat.format(Date(detail.publishTime.toLong())))
-                        if (detail.scoreDeadline > 0) InfoRow("截止时间", dateFormat.format(Date(detail.scoreDeadline.toLong())))
-                        InfoRow("是否锁定", if (detail.isLocked) "是" else "否")
-                        InfoRow("是否计分", if (detail.isScore) "是" else "否")
-                    }
+        Column(
+          modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
+          verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+          InfoCard(title = detail.name) {
+            InfoRow("CID", cid.toString())
+            InfoRow("Leaf ID", detail.id.toString())
+            InfoRow("Exam ID", detail.contentInfo.leafTypeId.toString())
+            if (detail.publishTime > 0) InfoRow("发布时间", dateFormat.format(Date(detail.publishTime.toLong())))
+            if (detail.scoreDeadline > 0) InfoRow("截止时间", dateFormat.format(Date(detail.scoreDeadline.toLong())))
+            InfoRow("是否锁定", if (detail.isLocked) "是" else "否")
+            InfoRow("是否计分", if (detail.isScore) "是" else "否")
+          }
 
-                    if (cover != null) {
-                        InfoCard(title = "考试信息") {
-                            InfoRow("题目数", cover.problemCount.toString())
-                            InfoRow("总分", cover.totalScore.toString())
-                            if (cover.startTime > 0) InfoRow("考试开始", dateFormat.format(Date(cover.startTime)))
-                            if (cover.deadline > 0) InfoRow("考试截止", dateFormat.format(Date(cover.deadline)))
-                        }
-                    } else {
-                        InfoCard(title = "考试信息") {
-                            InfoRow("状态", uiState.startBlockedReason ?: "考试信息不可用")
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Button(
-                        onClick = { onStartExam(cid, detail.contentInfo.leafTypeId) },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = MaterialTheme.shapes.medium,
-                        enabled = canStart
-                    ) {
-                        Text("开始自动答题", modifier = Modifier.padding(vertical = 4.dp))
-                    }
-                }
+          if (cover != null) {
+            InfoCard(title = "考试信息") {
+              InfoRow("题目数", cover.problemCount.toString())
+              InfoRow("总分", cover.totalScore.toString())
+              if (cover.startTime > 0) InfoRow("考试开始", dateFormat.format(Date(cover.startTime)))
+              if (cover.deadline > 0) InfoRow("考试截止", dateFormat.format(Date(cover.deadline)))
             }
+          } else {
+            InfoCard(title = "考试信息") {
+              InfoRow("状态", uiState.startBlockedReason ?: "考试信息不可用")
+            }
+          }
+
+          Spacer(modifier = Modifier.weight(1f))
+
+          Button(
+            onClick = { onStartExam(cid, detail.contentInfo.leafTypeId) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium,
+            enabled = canStart
+          ) {
+            Text("开始自动答题", modifier = Modifier.padding(vertical = 4.dp))
+          }
         }
+      }
     }
+  }
 }

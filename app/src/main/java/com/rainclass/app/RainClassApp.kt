@@ -6,11 +6,11 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 class RainClassApp : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        startKoin {
-            androidContext(this@RainClassApp)
-            modules(appModule)
-        }
+  override fun onCreate() {
+    super.onCreate()
+    startKoin {
+      androidContext(this@RainClassApp)
+      modules(appModule)
     }
+  }
 }

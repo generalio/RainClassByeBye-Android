@@ -12,20 +12,20 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun StatusChip(
-    text: String,
-    modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.primary
+  text: String,
+  modifier: Modifier = Modifier,
+  color: Color = MaterialTheme.colorScheme.primary
 ) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
-        color = color.copy(alpha = 0.12f)
-    ) {
-        Text(
-            text = text,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-            style = MaterialTheme.typography.labelMedium,
-            color = color
-        )
-    }
+  Surface(
+    modifier = modifier,
+    shape = RoundedCornerShape(12.dp),
+    color = color.copy(alpha = 0.12f)
+  ) {
+    Text(
+      text = text,
+      modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+      style = MaterialTheme.typography.labelMedium,
+      color = color
+    )
+  }
 }

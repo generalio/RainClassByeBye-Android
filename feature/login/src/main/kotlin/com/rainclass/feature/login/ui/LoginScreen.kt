@@ -95,7 +95,7 @@ fun LoginScreen(
         text = uiState.statusText,
         style = MaterialTheme.typography.bodyMedium,
         color = if (uiState.isLoggedIn) MaterialTheme.colorScheme.primary
-           else MaterialTheme.colorScheme.onSurfaceVariant
+        else MaterialTheme.colorScheme.onSurfaceVariant
       )
 
       if (uiState.isScanning) {

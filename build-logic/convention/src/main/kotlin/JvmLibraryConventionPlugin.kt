@@ -5,15 +5,15 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
 
 class JvmLibraryConventionPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        with(target) {
-            pluginManager.apply("org.jetbrains.kotlin.jvm")
+  override fun apply(target: Project) {
+    with(target) {
+      pluginManager.apply("org.jetbrains.kotlin.jvm")
 
-            extensions.configure<JavaPluginExtension> {
-                toolchain {
-                    languageVersion.set(JavaLanguageVersion.of(17))
-                }
-            }
+      extensions.configure<JavaPluginExtension> {
+        toolchain {
+          languageVersion.set(JavaLanguageVersion.of(17))
         }
+      }
     }
+  }
 }

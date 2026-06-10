@@ -1,23 +1,23 @@
 plugins {
-    id("rainclass.android.library.compose")
-    alias(libs.plugins.kotlin.serialization)
+  id("rainclass.android.library.compose")
+  alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.rainclass.feature.login"
+  namespace = "com.rainclass.feature.login"
 }
 
 dependencies {
-    implementation(project(":core:config"))
-    implementation(project(":core:network"))
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.coil.compose)
-    implementation(libs.koin.compose)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.okhttp)
-    implementation(libs.retrofit)
+  implementation(project(":core:config"))
+  implementation(project(":core:network"))
+  val composeBom = platform(libs.androidx.compose.bom)
+  implementation(composeBom)
+  implementation(libs.androidx.compose.material3)
+  implementation(libs.androidx.lifecycle.viewmodel.compose)
+  implementation(libs.androidx.lifecycle.runtime.compose)
+  implementation(libs.coil.compose)
+  implementation(libs.koin.compose)
+  implementation(libs.kotlinx.serialization.json)
+  implementation(libs.okhttp)
+  implementation(libs.retrofit)
 }

@@ -14,7 +14,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 
 val LocalRainNavigator = staticCompositionLocalOf<RainNavigator> {
-    error("RainNavigator 未提供，请在 RainNavHost 内使用")
+  error("RainNavigator 未提供，请在 RainNavHost 内使用")
 }
 
 typealias RainEntryProviderScope = EntryProviderScope<NavKey>
@@ -47,31 +47,31 @@ typealias RainEntryProviderScope = EntryProviderScope<NavKey>
  */
 @Composable
 fun RainNavHost(
-    startRoute: RainRoute,
-    modifier: Modifier = Modifier,
-    entries: RainEntryProviderScope.() -> Unit
+  startRoute: RainRoute,
+  modifier: Modifier = Modifier,
+  entries: RainEntryProviderScope.() -> Unit
 ) {
-    val backStack = rememberNavBackStack(startRoute)
-    val resultBus = remember { RainNavigationResultBus() }
-    val navigator = remember(backStack, resultBus) {
-        RainNavigator(backStack = backStack, resultBus = resultBus)
-    }
+  val backStack = rememberNavBackStack(startRoute)
+  val resultBus = remember { RainNavigationResultBus() }
+  val navigator = remember(backStack, resultBus) {
+    RainNavigator(backStack = backStack, resultBus = resultBus)
+  }
 
-    CompositionLocalProvider(
-        LocalRainNavigator provides navigator,
-        LocalRainNavigationResultBus provides resultBus
-    ) {
-        NavDisplay(
-            backStack = backStack,
-            modifier = modifier,
-            onBack = { navigator.pop() },
-            entryDecorators = listOf(
-                rememberSaveableStateHolderNavEntryDecorator(),
-                rememberViewModelStoreNavEntryDecorator()
-            ),
-            entryProvider = entryProvider(builder = entries)
-        )
-    }
+  CompositionLocalProvider(
+    LocalRainNavigator provides navigator,
+    LocalRainNavigationResultBus provides resultBus
+  ) {
+    NavDisplay(
+      backStack = backStack,
+      modifier = modifier,
+      onBack = { navigator.pop() },
+      entryDecorators = listOf(
+        rememberSaveableStateHolderNavEntryDecorator(),
+        rememberViewModelStoreNavEntryDecorator()
+      ),
+      entryProvider = entryProvider(builder = entries)
+    )
+  }
 }
 
 /**
@@ -92,11 +92,11 @@ fun RainNavHost(
  * 这里的 `route` 就是入栈时传入的 route 实例，字段可直接作为页面参数使用。
  */
 inline fun <reified T : RainRoute> RainEntryProviderScope.rainEntry(
-    noinline content: @Composable (route: T, navigator: RainNavigator) -> Unit
+  noinline content: @Composable (route: T, navigator: RainNavigator) -> Unit
 ) {
-    entry<T> { route ->
-        content(route, LocalRainNavigator.current)
-    }
+  entry<T> { route ->
+    content(route, LocalRainNavigator.current)
+  }
 }
 
 /**

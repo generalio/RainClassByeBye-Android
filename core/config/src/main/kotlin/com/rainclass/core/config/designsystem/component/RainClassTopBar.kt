@@ -9,25 +9,25 @@ import androidx.compose.ui.Modifier
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RainClassTopBar(
-    title: String,
-    modifier: Modifier = Modifier,
-    onBackClick: (() -> Unit)? = null,
-    actions: @Composable () -> Unit = {}
+  title: String,
+  modifier: Modifier = Modifier,
+  onBackClick: (() -> Unit)? = null,
+  actions: @Composable () -> Unit = {}
 ) {
-    TopAppBar(
-        title = { Text(title) },
-        modifier = modifier,
-        navigationIcon = {
-            if (onBackClick != null) {
-                IconButton(onClick = onBackClick) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
-                }
-            }
-        },
-        actions = { actions() },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface
-        )
+  TopAppBar(
+    title = { Text(title) },
+    modifier = modifier,
+    navigationIcon = {
+      if (onBackClick != null) {
+        IconButton(onClick = onBackClick) {
+          Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+        }
+      }
+    },
+    actions = { actions() },
+    colors = TopAppBarDefaults.topAppBarColors(
+      containerColor = MaterialTheme.colorScheme.surface,
+      titleContentColor = MaterialTheme.colorScheme.onSurface
     )
+  )
 }

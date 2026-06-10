@@ -11,32 +11,32 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ErrorMessage(
-    message: String,
-    modifier: Modifier = Modifier,
-    onRetry: (() -> Unit)? = null
+  message: String,
+  modifier: Modifier = Modifier,
+  onRetry: (() -> Unit)? = null
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth().padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            Icons.Default.ErrorOutline,
-            contentDescription = null,
-            modifier = Modifier.size(48.dp),
-            tint = MaterialTheme.colorScheme.error
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.error
-        )
-        if (onRetry != null) {
-            Spacer(modifier = Modifier.height(16.dp))
-            OutlinedButton(onClick = onRetry) {
-                Text("重试")
-            }
-        }
+  Column(
+    modifier = modifier.fillMaxWidth().padding(32.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center
+  ) {
+    Icon(
+      Icons.Default.ErrorOutline,
+      contentDescription = null,
+      modifier = Modifier.size(48.dp),
+      tint = MaterialTheme.colorScheme.error
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+    Text(
+      text = message,
+      style = MaterialTheme.typography.bodyMedium,
+      color = MaterialTheme.colorScheme.error
+    )
+    if (onRetry != null) {
+      Spacer(modifier = Modifier.height(16.dp))
+      OutlinedButton(onClick = onRetry) {
+        Text("重试")
+      }
     }
+  }
 }

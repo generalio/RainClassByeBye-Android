@@ -7,24 +7,24 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonTransformingSerializer
 
 internal object SafeUserDataSerializer : JsonTransformingSerializer<UserData>(UserData.serializer()) {
-    override fun transformDeserialize(element: JsonElement): JsonElement {
-        return if (element is JsonObject) element else JsonObject(emptyMap())
-    }
+  override fun transformDeserialize(element: JsonElement): JsonElement {
+    return if (element is JsonObject) element else JsonObject(emptyMap())
+  }
 }
 
 @Serializable
 data class UserInfoResponse(
-    val code: Int = 0,
-    val msg: String = "",
-    @Serializable(with = SafeUserDataSerializer::class)
-    val data: UserData = UserData()
+  val code: Int = 0,
+  val msg: String = "",
+  @Serializable(with = SafeUserDataSerializer::class)
+  val data: UserData = UserData()
 )
 
 @Serializable
 data class UserData(
-    val id: String = "",
-    val name: String = "",
-    val school: String = "",
-    @SerialName("school_number") val schoolNumber: String = "",
-    val avatar: String = ""
+  val id: String = "",
+  val name: String = "",
+  val school: String = "",
+  @SerialName("school_number") val schoolNumber: String = "",
+  val avatar: String = ""
 )

@@ -1,18 +1,18 @@
 plugins {
-    id("rainclass.android.library")
-    alias(libs.plugins.kotlin.serialization)
+  id("rainclass.android.library")
+  alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.rainclass.core.network"
+  namespace = "com.rainclass.core.network"
 }
 
 dependencies {
-    implementation(project(":core:config"))
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.kotlinx.serialization)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlinx.coroutines.core)
+  implementation(project(":core:config"))
+  implementation(libs.okhttp)
+  implementation(libs.okhttp.logging)
+  implementation(libs.retrofit)
+  implementation(libs.retrofit.kotlinx.serialization)
+  implementation(libs.kotlinx.serialization.json)
+  implementation(libs.kotlinx.coroutines.core)
 }

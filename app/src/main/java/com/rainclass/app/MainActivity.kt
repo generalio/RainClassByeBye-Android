@@ -13,18 +13,18 @@ import com.rainclass.core.network.cookie.PersistentCookieStore
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
-    private val cookieStore: PersistentCookieStore by inject()
+  private val cookieStore: PersistentCookieStore by inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    enableEdgeToEdge()
 
-        val startDestination: RainRoute = if (cookieStore.hasCookies()) Home else Login
+    val startDestination: RainRoute = if (cookieStore.hasCookies()) Home else Login
 
-        setContent {
-            RainClassTheme {
-                AppNavHost(startDestination = startDestination)
-            }
-        }
+    setContent {
+      RainClassTheme {
+        AppNavHost(startDestination = startDestination)
+      }
     }
+  }
 }

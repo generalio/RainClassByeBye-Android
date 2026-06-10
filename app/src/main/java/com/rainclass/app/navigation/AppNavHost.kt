@@ -25,87 +25,87 @@ import org.koin.compose.koinInject
 
 @Composable
 fun AppNavHost(startDestination: RainRoute = Login) {
-    val cookieStore: PersistentCookieStore = koinInject()
+  val cookieStore: PersistentCookieStore = koinInject()
 
-    RainNavHost(startRoute = startDestination) {
-        rainEntry<Login> { _, navigator ->
-            val vm: LoginViewModel = koinViewModel()
-            LoginScreen(viewModel = vm, onLoginSuccess = {
-                navigator.replaceAll(Home)
-            })
-        }
-
-        rainEntry<Home> { _, navigator ->
-            val vm: HomeViewModel = koinViewModel()
-            HomeScreen(
-                viewModel = vm,
-                onNavigateToCourses = { navigator.navigate(Courses) },
-                onNavigateToStatus = { navigator.navigate(Status) },
-                onNavigateToSettings = { navigator.navigate(Settings) },
-                onLogout = {
-                    cookieStore.clearAll()
-                    navigator.replaceAll(Login)
-                }
-            )
-        }
-
-        rainEntry<Courses> { _, navigator ->
-            val vm: CoursesViewModel = koinViewModel()
-            CoursesScreen(
-                viewModel = vm,
-                onBackClick = { navigator.pop() },
-                onCourseClick = { cid -> navigator.navigate(HomeworkList(cid)) }
-            )
-        }
-
-        rainEntry<HomeworkList> { route, navigator ->
-            val vm: HomeworkViewModel = koinViewModel()
-            HomeworkListScreen(
-                cid = route.cid,
-                viewModel = vm,
-                onBackClick = { navigator.pop() },
-                onHomeworkClick = { cid, leafId -> navigator.navigate(HomeworkDetail(cid, leafId)) }
-            )
-        }
-
-        rainEntry<HomeworkDetail> { route, navigator ->
-            val vm: HomeworkViewModel = koinViewModel()
-            HomeworkDetailScreen(
-                cid = route.cid,
-                leafId = route.leafId,
-                viewModel = vm,
-                onBackClick = { navigator.pop() },
-                onStartExam = { cid, examId ->
-                    navigator.navigate(ExamProgress(cid, examId))
-                }
-            )
-        }
-
-        rainEntry<ExamProgress> { route, navigator ->
-            val vm: ExamViewModel = koinViewModel()
-            ExamProgressScreen(
-                cid = route.cid,
-                examId = route.examId,
-                isResume = route.isResume,
-                viewModel = vm,
-                onBackClick = { navigator.pop() }
-            )
-        }
-
-        rainEntry<Status> { _, navigator ->
-            val vm: ExamStatusViewModel = koinViewModel()
-            ExamStatusScreen(
-                viewModel = vm,
-                onBackClick = { navigator.pop() },
-                onResume = { cid, examId ->
-                    navigator.navigate(ExamProgress(cid, examId, isResume = true))
-                }
-            )
-        }
-
-        rainEntry<Settings> { _, navigator ->
-            val vm: SettingsViewModel = koinViewModel()
-            SettingsScreen(viewModel = vm, onBackClick = { navigator.pop() })
-        }
+  RainNavHost(startRoute = startDestination) {
+    rainEntry<Login> { _, navigator ->
+      val vm: LoginViewModel = koinViewModel()
+      LoginScreen(viewModel = vm, onLoginSuccess = {
+        navigator.replaceAll(Home)
+      })
     }
+
+    rainEntry<Home> { _, navigator ->
+      val vm: HomeViewModel = koinViewModel()
+      HomeScreen(
+        viewModel = vm,
+        onNavigateToCourses = { navigator.navigate(Courses) },
+        onNavigateToStatus = { navigator.navigate(Status) },
+        onNavigateToSettings = { navigator.navigate(Settings) },
+        onLogout = {
+          cookieStore.clearAll()
+          navigator.replaceAll(Login)
+        }
+      )
+    }
+
+    rainEntry<Courses> { _, navigator ->
+      val vm: CoursesViewModel = koinViewModel()
+      CoursesScreen(
+        viewModel = vm,
+        onBackClick = { navigator.pop() },
+        onCourseClick = { cid -> navigator.navigate(HomeworkList(cid)) }
+      )
+    }
+
+    rainEntry<HomeworkList> { route, navigator ->
+      val vm: HomeworkViewModel = koinViewModel()
+      HomeworkListScreen(
+        cid = route.cid,
+        viewModel = vm,
+        onBackClick = { navigator.pop() },
+        onHomeworkClick = { cid, leafId -> navigator.navigate(HomeworkDetail(cid, leafId)) }
+      )
+    }
+
+    rainEntry<HomeworkDetail> { route, navigator ->
+      val vm: HomeworkViewModel = koinViewModel()
+      HomeworkDetailScreen(
+        cid = route.cid,
+        leafId = route.leafId,
+        viewModel = vm,
+        onBackClick = { navigator.pop() },
+        onStartExam = { cid, examId ->
+          navigator.navigate(ExamProgress(cid, examId))
+        }
+      )
+    }
+
+    rainEntry<ExamProgress> { route, navigator ->
+      val vm: ExamViewModel = koinViewModel()
+      ExamProgressScreen(
+        cid = route.cid,
+        examId = route.examId,
+        isResume = route.isResume,
+        viewModel = vm,
+        onBackClick = { navigator.pop() }
+      )
+    }
+
+    rainEntry<Status> { _, navigator ->
+      val vm: ExamStatusViewModel = koinViewModel()
+      ExamStatusScreen(
+        viewModel = vm,
+        onBackClick = { navigator.pop() },
+        onResume = { cid, examId ->
+          navigator.navigate(ExamProgress(cid, examId, isResume = true))
+        }
+      )
+    }
+
+    rainEntry<Settings> { _, navigator ->
+      val vm: SettingsViewModel = koinViewModel()
+      SettingsScreen(viewModel = vm, onBackClick = { navigator.pop() })
+    }
+  }
 }

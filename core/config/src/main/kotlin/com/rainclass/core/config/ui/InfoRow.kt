@@ -9,24 +9,24 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun InfoRow(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier
+  label: String,
+  value: String,
+  modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth().padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(1f)
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-    }
+  Row(
+    modifier = modifier.fillMaxWidth().padding(vertical = 4.dp),
+    horizontalArrangement = Arrangement.SpaceBetween
+  ) {
+    Text(
+      text = label,
+      style = MaterialTheme.typography.bodyMedium,
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+      modifier = Modifier.weight(1f)
+    )
+    Text(
+      text = value,
+      style = MaterialTheme.typography.bodyMedium,
+      color = MaterialTheme.colorScheme.onSurface
+    )
+  }
 }

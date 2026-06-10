@@ -11,20 +11,20 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun LoadingIndicator(
-    modifier: Modifier = Modifier,
-    message: String = "加载中..."
+  modifier: Modifier = Modifier,
+  message: String = "加载中..."
 ) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        CircularProgressIndicator()
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+  Column(
+    modifier = modifier.fillMaxSize(),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center
+  ) {
+    CircularProgressIndicator()
+    Spacer(modifier = Modifier.height(16.dp))
+    Text(
+      text = message,
+      style = MaterialTheme.typography.bodyMedium,
+      color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+  }
 }

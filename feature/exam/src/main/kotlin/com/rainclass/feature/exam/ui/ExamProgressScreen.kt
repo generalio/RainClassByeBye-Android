@@ -32,75 +32,75 @@ import com.rainclass.feature.exam.viewmodel.ExamViewModel
 
 @Composable
 fun ExamProgressScreen(
-    cid: Long,
-    examId: Long,
-    isResume: Boolean,
-    viewModel: ExamViewModel,
-    onBackClick: () -> Unit
+  cid: Long,
+  examId: Long,
+  isResume: Boolean,
+  viewModel: ExamViewModel,
+  onBackClick: () -> Unit
 ) {
-    val progress by viewModel.progress.collectAsState()
-    val listState = rememberLazyListState()
+  val progress by viewModel.progress.collectAsState()
+  val listState = rememberLazyListState()
 
-    LaunchedEffect(cid, examId) {
-        viewModel.startExam(cid, examId, isResume)
+  LaunchedEffect(cid, examId) {
+    viewModel.startExam(cid, examId, isResume)
+  }
+
+  LaunchedEffect(progress.logs.size) {
+    if (progress.logs.isNotEmpty()) {
+      listState.animateScrollToItem(progress.logs.size - 1)
     }
+  }
 
-    LaunchedEffect(progress.logs.size) {
-        if (progress.logs.isNotEmpty()) {
-            listState.animateScrollToItem(progress.logs.size - 1)
-        }
-    }
-
-    Scaffold(
-        topBar = {
-            RainClassTopBar(
-                title = progress.examTitle.ifEmpty { "自动答题" },
-                onBackClick = onBackClick,
-                actions = {
-                    if (progress.isRunning) {
-                        IconButton(onClick = { viewModel.cancel() }) {
-                            Icon(Icons.Default.Stop, contentDescription = "停止", tint = MaterialTheme.colorScheme.error)
-                        }
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                val (statusText, statusColor) = when (progress.status) {
-                    ExamStatus.PENDING -> "等待中" to MaterialTheme.colorScheme.onSurfaceVariant
-                    ExamStatus.RUNNING -> "进行中" to MaterialTheme.colorScheme.primary
-                    ExamStatus.INTERRUPTED -> "已中断" to MaterialTheme.colorScheme.error
-                    ExamStatus.PARTIAL -> "部分完成" to MaterialTheme.colorScheme.tertiary
-                    ExamStatus.READY_TO_SUBMIT -> "待交卷" to MaterialTheme.colorScheme.secondary
-                    ExamStatus.COMPLETED -> "已完成" to MaterialTheme.colorScheme.primary
-                }
-                StatusChip(text = statusText, color = statusColor)
+  Scaffold(
+    topBar = {
+      RainClassTopBar(
+        title = progress.examTitle.ifEmpty { "自动答题" },
+        onBackClick = onBackClick,
+        actions = {
+          if (progress.isRunning) {
+            IconButton(onClick = { viewModel.cancel() }) {
+              Icon(Icons.Default.Stop, contentDescription = "停止", tint = MaterialTheme.colorScheme.error)
             }
-
-            ProgressCard(
-                current = progress.answeredCount,
-                total = progress.totalProblems,
-                failed = progress.failedCount
-            )
-
-            Text("执行日志", style = MaterialTheme.typography.titleSmall)
-
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                verticalArrangement = Arrangement.spacedBy(1.dp)
-            ) {
-                items(progress.logs) { entry ->
-                    LogItem(entry = entry)
-                }
-            }
+          }
         }
+      )
     }
+  ) { padding ->
+    Column(
+      modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp),
+      verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+      Spacer(modifier = Modifier.height(4.dp))
+
+      Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        val (statusText, statusColor) = when (progress.status) {
+          ExamStatus.PENDING -> "等待中" to MaterialTheme.colorScheme.onSurfaceVariant
+          ExamStatus.RUNNING -> "进行中" to MaterialTheme.colorScheme.primary
+          ExamStatus.INTERRUPTED -> "已中断" to MaterialTheme.colorScheme.error
+          ExamStatus.PARTIAL -> "部分完成" to MaterialTheme.colorScheme.tertiary
+          ExamStatus.READY_TO_SUBMIT -> "待交卷" to MaterialTheme.colorScheme.secondary
+          ExamStatus.COMPLETED -> "已完成" to MaterialTheme.colorScheme.primary
+        }
+        StatusChip(text = statusText, color = statusColor)
+      }
+
+      ProgressCard(
+        current = progress.answeredCount,
+        total = progress.totalProblems,
+        failed = progress.failedCount
+      )
+
+      Text("执行日志", style = MaterialTheme.typography.titleSmall)
+
+      LazyColumn(
+        state = listState,
+        modifier = Modifier.fillMaxWidth().weight(1f),
+        verticalArrangement = Arrangement.spacedBy(1.dp)
+      ) {
+        items(progress.logs) { entry ->
+          LogItem(entry = entry)
+        }
+      }
+    }
+  }
 }
