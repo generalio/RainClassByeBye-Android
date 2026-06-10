@@ -10,7 +10,7 @@ data class WxOauthResponse(
 
 @Serializable
 data class WxOauthData(
-    @SerialName("app_id") val appId: String = "",
+    @SerialName("appId") val appId: String = "",
     val state: String = "",
-    @SerialName("redirect_uri") val redirectUri: String = ""
+    @SerialName("redirectUri") val redirectUri: String = ""
 )

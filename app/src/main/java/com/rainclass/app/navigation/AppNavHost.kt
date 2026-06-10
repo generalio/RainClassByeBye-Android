@@ -8,6 +8,8 @@ import androidx.navigation.toRoute
 import com.rainclass.feature.courses.CoursesScreen
 import com.rainclass.feature.courses.CoursesViewModel
 import com.rainclass.feature.exam.ExamProgressScreen
+import com.rainclass.feature.exam.ExamStatusScreen
+import com.rainclass.feature.exam.ExamStatusViewModel
 import com.rainclass.feature.exam.ExamViewModel
 import com.rainclass.feature.home.HomeScreen
 import com.rainclass.feature.home.HomeViewModel
@@ -40,7 +42,7 @@ fun AppNavHost(startDestination: Any = Login) {
             HomeScreen(
                 viewModel = vm,
                 onNavigateToCourses = { navController.navigate(Courses) },
-                onNavigateToStatus = { /* TODO */ },
+                onNavigateToStatus = { navController.navigate(Status) },
                 onNavigateToSettings = { navController.navigate(Settings) },
                 onLogout = {
                     cookieStore.clearAll()
@@ -92,6 +94,17 @@ fun AppNavHost(startDestination: Any = Login) {
                 isResume = route.isResume,
                 viewModel = vm,
                 onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable<Status> {
+            val vm: ExamStatusViewModel = koinViewModel()
+            ExamStatusScreen(
+                viewModel = vm,
+                onBackClick = { navController.popBackStack() },
+                onResume = { cid, examId ->
+                    navController.navigate(ExamProgress(cid, examId, isResume = true))
+                }
             )
         }
 

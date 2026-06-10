@@ -36,6 +36,7 @@ data class LeafNode(
     val id: Long = 0,
     val name: String = "",
     @SerialName("leaf_type") val leafType: Int = 0,
+    @SerialName("leafinfo_id") val leafInfoId: Long = 0,
     @SerialName("is_assessed") val isAssessed: Boolean = false,
     @SerialName("start_time") val startTime: Long = 0,
     @SerialName("score_deadline") val scoreDeadline: Long = 0

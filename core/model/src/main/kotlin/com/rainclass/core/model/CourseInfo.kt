@@ -16,7 +16,9 @@ internal object SafeCourseDataSerializer : JsonTransformingSerializer<CourseData
 data class CourseInfoResponse(
     val code: Int = 0,
     val msg: String = "",
-    @SerialName("course_data")
+    val errcode: Int = 0,
+    val errmsg: String = "",
+    @SerialName("data")
     @Serializable(with = SafeCourseDataSerializer::class)
     val courseData: CourseData = CourseData()
 )

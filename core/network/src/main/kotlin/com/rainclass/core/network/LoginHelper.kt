@@ -24,15 +24,21 @@ class LoginHelper(
 
         // Step 2: Get OAuth info
         val oauthInfo = api.getWxOauthInfo()
+        val appId = oauthInfo.data.appId
+        val redirectUri = oauthInfo.data.redirectUri
         oauthState = oauthInfo.data.state
+
+        if (appId.isBlank() || redirectUri.isBlank() || oauthState.isBlank()) {
+            throw Exception("微信 OAuth 参数缺失")
+        }
 
         // Step 3: Get QR code page to extract UUID
         val qrPageUrl = "https://open.weixin.qq.com/connect/qrconnect?" +
-            "appid=${oauthInfo.data.appId}" +
-            "&redirect_uri=${URLEncoder.encode(oauthInfo.data.redirectUri, "UTF-8")}" +
+            "appid=$appId" +
+            "&redirect_uri=${URLEncoder.encode(redirectUri, "UTF-8")}" +
             "&response_type=code" +
             "&scope=snsapi_login" +
-            "&state=${oauthInfo.data.state}"
+            "&state=$oauthState"
 
         val pageContent = httpGet(qrPageUrl)
         val uuid = uuidRegex.find(pageContent)?.groupValues?.get(1)
@@ -77,6 +83,9 @@ class LoginHelper(
     private fun httpGet(url: String): String {
         val request = Request.Builder().url(url).get().build()
         return httpClient.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                throw Exception("GET 请求失败: HTTP ${response.code}")
+            }
             response.body?.string() ?: ""
         }
     }
@@ -84,6 +93,9 @@ class LoginHelper(
     private fun httpGetBytes(url: String): ByteArray {
         val request = Request.Builder().url(url).get().build()
         return httpClient.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                throw Exception("GET 请求失败: HTTP ${response.code}")
+            }
             response.body?.bytes() ?: ByteArray(0)
         }
     }

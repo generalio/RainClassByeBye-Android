@@ -31,10 +31,12 @@ data class ExamPaperData(
 @Serializable
 data class ProblemsEntity(
     @SerialName("problem_id") val problemId: Long = 0,
+    @SerialName("Body")
     val body: String = "",
-    @SerialName("type_text") val typeText: String = "",
+    @SerialName("TypeText") val typeText: String = "",
     val index: Long = 0,
     val score: Double = 0.0,
+    @SerialName("Options")
     val options: List<OptionsEntity> = emptyList()
 )
 

@@ -11,6 +11,7 @@ import com.rainclass.core.network.LoginHelper
 import com.rainclass.core.network.NetworkModule
 import com.rainclass.core.network.cookie.PersistentCookieStore
 import com.rainclass.feature.courses.CoursesViewModel
+import com.rainclass.feature.exam.ExamStatusViewModel
 import com.rainclass.feature.exam.ExamViewModel
 import com.rainclass.feature.home.HomeViewModel
 import com.rainclass.feature.homework.HomeworkViewModel
@@ -59,5 +60,6 @@ val appModule = module {
             }
         )
     }
+    viewModel { ExamStatusViewModel(get()) }
     viewModel { SettingsViewModel(get()) }
 }
