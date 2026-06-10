@@ -18,11 +18,14 @@ import com.rainclass.feature.login.LoginScreen
 import com.rainclass.feature.login.LoginViewModel
 import com.rainclass.feature.settings.SettingsScreen
 import com.rainclass.feature.settings.SettingsViewModel
+import com.rainclass.core.network.cookie.PersistentCookieStore
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun AppNavHost(startDestination: Any = Login) {
     val navController = rememberNavController()
+    val cookieStore: PersistentCookieStore = koinInject()
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable<Login> {
@@ -40,6 +43,7 @@ fun AppNavHost(startDestination: Any = Login) {
                 onNavigateToStatus = { /* TODO */ },
                 onNavigateToSettings = { navController.navigate(Settings) },
                 onLogout = {
+                    cookieStore.clearAll()
                     navController.navigate(Login) { popUpTo(Home) { inclusive = true } }
                 }
             )

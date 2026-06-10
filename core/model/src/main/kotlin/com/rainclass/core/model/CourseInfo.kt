@@ -2,10 +2,23 @@ package com.rainclass.core.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonTransformingSerializer
+
+internal object SafeCourseDataSerializer : JsonTransformingSerializer<CourseData>(CourseData.serializer()) {
+    override fun transformDeserialize(element: JsonElement): JsonElement {
+        return if (element is JsonObject) element else JsonObject(emptyMap())
+    }
+}
 
 @Serializable
 data class CourseInfoResponse(
-    @SerialName("course_data") val courseData: CourseData = CourseData()
+    val code: Int = 0,
+    val msg: String = "",
+    @SerialName("course_data")
+    @Serializable(with = SafeCourseDataSerializer::class)
+    val courseData: CourseData = CourseData()
 )
 
 @Serializable

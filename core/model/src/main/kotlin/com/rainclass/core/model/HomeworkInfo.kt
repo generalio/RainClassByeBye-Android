@@ -2,9 +2,21 @@ package com.rainclass.core.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonTransformingSerializer
+
+internal object SafeHomeworkDataSerializer : JsonTransformingSerializer<HomeworkData>(HomeworkData.serializer()) {
+    override fun transformDeserialize(element: JsonElement): JsonElement {
+        return if (element is JsonObject) element else JsonObject(emptyMap())
+    }
+}
 
 @Serializable
 data class HomeworkInfoResponse(
+    val code: Int = 0,
+    val msg: String = "",
+    @Serializable(with = SafeHomeworkDataSerializer::class)
     val data: HomeworkData = HomeworkData()
 )
 
