@@ -28,8 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rainclass.core.database.ExamStateEntity
-import com.rainclass.core.designsystem.component.RainClassTopBar
-import com.rainclass.core.designsystem.component.StatusChip
+import com.rainclass.core.config.designsystem.component.RainClassTopBar
+import com.rainclass.core.config.designsystem.component.StatusChip
 import com.rainclass.feature.exam.viewmodel.ExamStatusViewModel
 import java.text.SimpleDateFormat
 import java.util.Date

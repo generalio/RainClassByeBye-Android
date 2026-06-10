@@ -1,6 +1,6 @@
 package com.rainclass.feature.home.model.repository
 
-import com.rainclass.core.model.UnauthenticatedException
+import com.rainclass.core.config.model.UnauthenticatedException
 import com.rainclass.feature.home.model.api.HomeApi
 import com.rainclass.feature.home.model.bean.UserData
 

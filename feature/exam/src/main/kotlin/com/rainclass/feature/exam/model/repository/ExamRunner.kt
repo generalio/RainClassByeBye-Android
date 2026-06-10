@@ -2,7 +2,7 @@ package com.rainclass.feature.exam.model.repository
 
 import com.rainclass.core.database.AppDatabase
 import com.rainclass.core.database.ExamStateEntity
-import com.rainclass.core.model.AppSettings
+import com.rainclass.core.config.model.AppSettings
 import com.rainclass.feature.exam.model.api.ExamApi
 import com.rainclass.feature.exam.model.api.ExamTokenApi
 import com.rainclass.feature.exam.model.bean.AnsweredRecord

@@ -2,8 +2,8 @@ package com.rainclass.feature.settings.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rainclass.core.datastore.SettingsDataStore
-import com.rainclass.core.model.AppSettings
+import com.rainclass.core.config.datastore.SettingsDataStore
+import com.rainclass.core.config.model.AppSettings
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn

@@ -8,9 +8,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:config"))
     implementation(project(":core:network"))
-    implementation(project(":core:designsystem"))
-    implementation(project(":core:ui"))
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     implementation(libs.androidx.compose.material3)

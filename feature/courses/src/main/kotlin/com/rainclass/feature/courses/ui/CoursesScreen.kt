@@ -27,9 +27,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.rainclass.core.designsystem.component.ErrorMessage
-import com.rainclass.core.designsystem.component.LoadingIndicator
-import com.rainclass.core.designsystem.component.RainClassTopBar
+import com.rainclass.core.config.designsystem.component.ErrorMessage
+import com.rainclass.core.config.designsystem.component.LoadingIndicator
+import com.rainclass.core.config.designsystem.component.RainClassTopBar
 import com.rainclass.feature.courses.model.bean.CourseNode
 import com.rainclass.feature.courses.viewmodel.CoursesViewModel
 

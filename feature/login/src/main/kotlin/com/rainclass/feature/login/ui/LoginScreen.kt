@@ -30,7 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.rainclass.core.designsystem.component.LoadingIndicator
+import com.rainclass.core.config.designsystem.component.LoadingIndicator
 import com.rainclass.feature.login.viewmodel.LoginViewModel
 
 @Composable

@@ -2,7 +2,7 @@ package com.rainclass.feature.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rainclass.core.model.UnauthenticatedException
+import com.rainclass.core.config.model.UnauthenticatedException
 import com.rainclass.feature.home.model.bean.UserData
 import com.rainclass.feature.home.model.repository.HomeRepository
 import kotlinx.coroutines.flow.MutableStateFlow

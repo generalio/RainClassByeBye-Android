@@ -28,8 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.rainclass.core.designsystem.component.RainClassTopBar
-import com.rainclass.core.model.AppSettings
+import com.rainclass.core.config.designsystem.component.RainClassTopBar
+import com.rainclass.core.config.model.AppSettings
 import com.rainclass.feature.settings.viewmodel.SettingsViewModel
 
 @Composable

@@ -29,14 +29,9 @@ dependencyResolutionManagement {
 rootProject.name = "RainClass"
 
 include(":app")
-include(":core:model")
-include(":core:common")
+include(":core:config")
 include(":core:network")
 include(":core:database")
-include(":core:datastore")
-include(":core:designsystem")
-include(":core:ui")
-include(":core:domain")
 include(":feature:login")
 include(":feature:home")
 include(":feature:courses")

@@ -20,10 +20,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.rainclass.core.designsystem.component.ErrorMessage
-import com.rainclass.core.designsystem.component.LoadingIndicator
-import com.rainclass.core.designsystem.component.RainClassTopBar
-import com.rainclass.core.designsystem.component.StatusChip
+import com.rainclass.core.config.designsystem.component.ErrorMessage
+import com.rainclass.core.config.designsystem.component.LoadingIndicator
+import com.rainclass.core.config.designsystem.component.RainClassTopBar
+import com.rainclass.core.config.designsystem.component.StatusChip
 import com.rainclass.feature.homework.model.bean.LeafNode
 import com.rainclass.feature.homework.viewmodel.HomeworkViewModel
 import java.text.SimpleDateFormat

@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import com.rainclass.app.navigation.AppNavHost
 import com.rainclass.app.navigation.Home
 import com.rainclass.app.navigation.Login
-import com.rainclass.core.designsystem.theme.RainClassTheme
+import com.rainclass.core.config.designsystem.theme.RainClassTheme
 import com.rainclass.core.network.cookie.PersistentCookieStore
 import org.koin.android.ext.android.inject
 

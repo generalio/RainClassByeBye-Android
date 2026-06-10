@@ -1,7 +1,7 @@
 package com.rainclass.app.di
 
 import com.rainclass.core.database.AppDatabase
-import com.rainclass.core.datastore.SettingsDataStore
+import com.rainclass.core.config.datastore.SettingsDataStore
 import com.rainclass.core.network.NetworkModule
 import com.rainclass.core.network.cookie.PersistentCookieStore
 import com.rainclass.feature.courses.model.api.CoursesApi

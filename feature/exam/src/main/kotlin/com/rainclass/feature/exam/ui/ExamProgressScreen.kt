@@ -24,9 +24,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.rainclass.core.designsystem.component.RainClassTopBar
-import com.rainclass.core.designsystem.component.StatusChip
-import com.rainclass.core.ui.ProgressCard
+import com.rainclass.core.config.designsystem.component.RainClassTopBar
+import com.rainclass.core.config.designsystem.component.StatusChip
+import com.rainclass.core.config.ui.ProgressCard
 import com.rainclass.feature.exam.model.bean.ExamStatus
 import com.rainclass.feature.exam.viewmodel.ExamViewModel
 
