@@ -1,11 +1,10 @@
 package com.rainclass.app.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.rainclass.core.network.cookie.PersistentCookieStore
+import com.rainclass.core.navigation3.RainNavHost
+import com.rainclass.core.navigation3.RainRoute
+import com.rainclass.core.navigation3.rainEntry
 import com.rainclass.feature.courses.ui.CoursesScreen
 import com.rainclass.feature.courses.viewmodel.CoursesViewModel
 import com.rainclass.feature.exam.ui.ExamProgressScreen
@@ -25,92 +24,88 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun AppNavHost(startDestination: Any = Login) {
-    val navController = rememberNavController()
+fun AppNavHost(startDestination: RainRoute = Login) {
     val cookieStore: PersistentCookieStore = koinInject()
 
-    NavHost(navController = navController, startDestination = startDestination) {
-        composable<Login> {
+    RainNavHost(startRoute = startDestination) {
+        rainEntry<Login> { _, navigator ->
             val vm: LoginViewModel = koinViewModel()
             LoginScreen(viewModel = vm, onLoginSuccess = {
-                navController.navigate(Home) { popUpTo(Login) { inclusive = true } }
+                navigator.replaceAll(Home)
             })
         }
 
-        composable<Home> {
+        rainEntry<Home> { _, navigator ->
             val vm: HomeViewModel = koinViewModel()
             HomeScreen(
                 viewModel = vm,
-                onNavigateToCourses = { navController.navigate(Courses) },
-                onNavigateToStatus = { navController.navigate(Status) },
-                onNavigateToSettings = { navController.navigate(Settings) },
+                onNavigateToCourses = { navigator.navigate(Courses) },
+                onNavigateToStatus = { navigator.navigate(Status) },
+                onNavigateToSettings = { navigator.navigate(Settings) },
                 onLogout = {
                     cookieStore.clearAll()
-                    navController.navigate(Login) { popUpTo(Home) { inclusive = true } }
+                    navigator.replaceAll(Login)
                 }
             )
         }
 
-        composable<Courses> {
+        rainEntry<Courses> { _, navigator ->
             val vm: CoursesViewModel = koinViewModel()
             CoursesScreen(
                 viewModel = vm,
-                onBackClick = { navController.popBackStack() },
-                onCourseClick = { cid -> navController.navigate(HomeworkList(cid)) }
+                onBackClick = { navigator.pop() },
+                onCourseClick = { cid -> navigator.navigate(HomeworkList(cid)) }
             )
         }
 
-        composable<HomeworkList> { backStackEntry ->
-            val route = backStackEntry.toRoute<HomeworkList>()
+        rainEntry<HomeworkList> { route, navigator ->
             val vm: HomeworkViewModel = koinViewModel()
             HomeworkListScreen(
                 cid = route.cid,
                 viewModel = vm,
-                onBackClick = { navController.popBackStack() },
-                onHomeworkClick = { cid, leafId -> navController.navigate(HomeworkDetail(cid, leafId)) }
+                onBackClick = { navigator.pop() },
+                onHomeworkClick = { cid, leafId -> navigator.navigate(HomeworkDetail(cid, leafId)) }
             )
         }
 
-        composable<HomeworkDetail> { backStackEntry ->
-            val route = backStackEntry.toRoute<HomeworkDetail>()
+        rainEntry<HomeworkDetail> { route, navigator ->
             val vm: HomeworkViewModel = koinViewModel()
             HomeworkDetailScreen(
                 cid = route.cid,
                 leafId = route.leafId,
                 viewModel = vm,
-                onBackClick = { navController.popBackStack() },
+                onBackClick = { navigator.pop() },
                 onStartExam = { cid, examId ->
-                    navController.navigate(ExamProgress(cid, examId))
+                    navigator.navigate(ExamProgress(cid, examId))
                 }
             )
         }
 
-        composable<ExamProgress> { backStackEntry ->
-            val route = backStackEntry.toRoute<ExamProgress>()
+        rainEntry<ExamProgress> { route, navigator ->
             val vm: ExamViewModel = koinViewModel()
             ExamProgressScreen(
                 cid = route.cid,
                 examId = route.examId,
                 isResume = route.isResume,
                 viewModel = vm,
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navigator.pop() }
             )
         }
 
-        composable<Status> {
+        rainEntry<Status> { _, navigator ->
             val vm: ExamStatusViewModel = koinViewModel()
             ExamStatusScreen(
                 viewModel = vm,
-                onBackClick = { navController.popBackStack() },
+                onBackClick = { navigator.pop() },
                 onResume = { cid, examId ->
-                    navController.navigate(ExamProgress(cid, examId, isResume = true))
+                    navigator.navigate(ExamProgress(cid, examId, isResume = true))
                 }
             )
         }
 
-        composable<Settings> {
+        rainEntry<Settings> { _, navigator ->
             val vm: SettingsViewModel = koinViewModel()
-            SettingsScreen(viewModel = vm, onBackClick = { navController.popBackStack() })
+            SettingsScreen(viewModel = vm, onBackClick = { navigator.pop() })
         }
     }
 }

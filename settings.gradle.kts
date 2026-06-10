@@ -30,6 +30,7 @@ rootProject.name = "RainClass"
 
 include(":app")
 include(":core:config")
+include(":core:navigation3")
 include(":core:network")
 include(":core:database")
 include(":feature:login")

@@ -20,6 +20,7 @@ android {
 
 dependencies {
     implementation(project(":core:config"))
+    implementation(project(":core:navigation3"))
     implementation(project(":core:network"))
     implementation(project(":core:database"))
     implementation(project(":feature:login"))
@@ -37,7 +38,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
     implementation(libs.kotlinx.serialization.json)

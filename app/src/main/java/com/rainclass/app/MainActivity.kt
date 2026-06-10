@@ -8,6 +8,7 @@ import com.rainclass.app.navigation.AppNavHost
 import com.rainclass.app.navigation.Home
 import com.rainclass.app.navigation.Login
 import com.rainclass.core.config.designsystem.theme.RainClassTheme
+import com.rainclass.core.navigation3.RainRoute
 import com.rainclass.core.network.cookie.PersistentCookieStore
 import org.koin.android.ext.android.inject
 
@@ -18,7 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val startDestination: Any = if (cookieStore.hasCookies()) Home else Login
+        val startDestination: RainRoute = if (cookieStore.hasCookies()) Home else Login
 
         setContent {
             RainClassTheme {
