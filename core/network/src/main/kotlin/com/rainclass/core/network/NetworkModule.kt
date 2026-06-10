@@ -1,9 +1,6 @@
 package com.rainclass.core.network
 
 import android.content.Context
-import com.rainclass.core.network.api.ExamApi
-import com.rainclass.core.network.api.LLMApi
-import com.rainclass.core.network.api.RainClassApi
 import com.rainclass.core.network.cookie.PersistentCookieStore
 import com.rainclass.core.network.interceptor.ExamInterceptor
 import com.rainclass.core.network.interceptor.RainClassInterceptor
@@ -26,7 +23,13 @@ object NetworkModule {
         return PersistentCookieStore(context)
     }
 
-    fun provideRainClassApi(cookieStore: PersistentCookieStore): RainClassApi {
+    fun provideCookieClient(cookieStore: PersistentCookieStore): OkHttpClient {
+        return OkHttpClient.Builder()
+            .cookieJar(cookieStore)
+            .build()
+    }
+
+    fun provideRainClassRetrofit(cookieStore: PersistentCookieStore): Retrofit {
         val client = OkHttpClient.Builder()
             .cookieJar(cookieStore)
             .addInterceptor(RainClassInterceptor(cookieStore))
@@ -41,10 +44,9 @@ object NetworkModule {
             .client(client)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
-            .create(RainClassApi::class.java)
     }
 
-    fun provideExamApi(cookieStore: PersistentCookieStore): ExamApi {
+    fun provideExamRetrofit(cookieStore: PersistentCookieStore): Retrofit {
         val client = OkHttpClient.Builder()
             .cookieJar(cookieStore)
             .addInterceptor(ExamInterceptor())
@@ -59,10 +61,9 @@ object NetworkModule {
             .client(client)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
-            .create(ExamApi::class.java)
     }
 
-    fun provideLLMApi(baseUrl: String, timeoutSeconds: Long): LLMApi {
+    fun provideLLMRetrofit(baseUrl: String, timeoutSeconds: Long): Retrofit {
         val client = OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(timeoutSeconds, TimeUnit.SECONDS)
@@ -76,6 +77,5 @@ object NetworkModule {
             .client(client)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
-            .create(LLMApi::class.java)
     }
 }

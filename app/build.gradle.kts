@@ -20,13 +20,11 @@ android {
 
 dependencies {
     implementation(project(":core:model"))
-    implementation(project(":core:common"))
     implementation(project(":core:network"))
     implementation(project(":core:database"))
     implementation(project(":core:datastore"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:ui"))
-    implementation(project(":core:domain"))
     implementation(project(":feature:login"))
     implementation(project(":feature:home"))
     implementation(project(":feature:courses"))
@@ -47,4 +45,5 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.okhttp)
+    implementation(libs.retrofit)
 }

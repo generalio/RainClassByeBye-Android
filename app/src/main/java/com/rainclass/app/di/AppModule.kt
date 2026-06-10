@@ -2,49 +2,54 @@ package com.rainclass.app.di
 
 import com.rainclass.core.database.AppDatabase
 import com.rainclass.core.datastore.SettingsDataStore
-import com.rainclass.core.domain.runner.ExamRunner
-import com.rainclass.core.domain.solver.LLMSolver
-import com.rainclass.core.domain.usecase.GetCoursesUseCase
-import com.rainclass.core.domain.usecase.GetHomeworkUseCase
-import com.rainclass.core.domain.usecase.GetUserInfoUseCase
-import com.rainclass.core.network.LoginHelper
 import com.rainclass.core.network.NetworkModule
 import com.rainclass.core.network.cookie.PersistentCookieStore
-import com.rainclass.feature.courses.CoursesViewModel
-import com.rainclass.feature.exam.ExamStatusViewModel
-import com.rainclass.feature.exam.ExamViewModel
-import com.rainclass.feature.home.HomeViewModel
-import com.rainclass.feature.homework.HomeworkViewModel
-import com.rainclass.feature.login.LoginViewModel
-import com.rainclass.feature.settings.SettingsViewModel
+import com.rainclass.feature.courses.model.api.CoursesApi
+import com.rainclass.feature.courses.model.repository.CoursesRepository
+import com.rainclass.feature.courses.viewmodel.CoursesViewModel
+import com.rainclass.feature.exam.model.api.ExamApi
+import com.rainclass.feature.exam.model.api.ExamTokenApi
+import com.rainclass.feature.exam.model.api.LLMApi
+import com.rainclass.feature.exam.model.repository.ExamRunner
+import com.rainclass.feature.exam.model.repository.LLMSolver
+import com.rainclass.feature.exam.viewmodel.ExamStatusViewModel
+import com.rainclass.feature.exam.viewmodel.ExamViewModel
+import com.rainclass.feature.home.model.api.HomeApi
+import com.rainclass.feature.home.model.repository.HomeRepository
+import com.rainclass.feature.home.viewmodel.HomeViewModel
+import com.rainclass.feature.homework.model.api.HomeworkApi
+import com.rainclass.feature.homework.model.repository.HomeworkRepository
+import com.rainclass.feature.homework.viewmodel.HomeworkViewModel
+import com.rainclass.feature.login.model.api.LoginApi
+import com.rainclass.feature.login.model.repository.LoginRepository
+import com.rainclass.feature.login.viewmodel.LoginViewModel
+import com.rainclass.feature.settings.viewmodel.SettingsViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    // Data layer
     single { NetworkModule.provideCookieStore(androidContext()) }
-    single { NetworkModule.provideRainClassApi(get()) }
-    single { NetworkModule.provideExamApi(get()) }
     single { AppDatabase.getInstance(androidContext()) }
     single { SettingsDataStore(androidContext()) }
 
-    // Login helper
+    single<LoginApi> { NetworkModule.provideRainClassRetrofit(get()).create(LoginApi::class.java) }
+    single<HomeApi> { NetworkModule.provideRainClassRetrofit(get()).create(HomeApi::class.java) }
+    single<CoursesApi> { NetworkModule.provideRainClassRetrofit(get()).create(CoursesApi::class.java) }
+    single<HomeworkApi> { NetworkModule.provideRainClassRetrofit(get()).create(HomeworkApi::class.java) }
+    single<ExamTokenApi> { NetworkModule.provideRainClassRetrofit(get()).create(ExamTokenApi::class.java) }
+    single<ExamApi> { NetworkModule.provideExamRetrofit(get()).create(ExamApi::class.java) }
+
     single {
         val cookieStore = get<PersistentCookieStore>()
-        val client = OkHttpClient.Builder().cookieJar(cookieStore).build()
-        LoginHelper(get(), client)
+        LoginRepository(get(), NetworkModule.provideCookieClient(cookieStore))
     }
+    single { HomeRepository(get()) }
+    single { CoursesRepository(get()) }
+    single { HomeworkRepository(get()) }
 
-    // Use cases
-    factory { GetUserInfoUseCase(get()) }
-    factory { GetCoursesUseCase(get()) }
-    factory { GetHomeworkUseCase(get()) }
-
-    // ViewModels
     viewModel { LoginViewModel(get()) }
     viewModel { HomeViewModel(get()) }
     viewModel { CoursesViewModel(get()) }
@@ -54,7 +59,9 @@ val appModule = module {
             examRunnerFactory = {
                 val settingsDataStore = get<SettingsDataStore>()
                 val currentSettings = runBlocking { settingsDataStore.settingsFlow.first() }
-                val llmApi = NetworkModule.provideLLMApi(currentSettings.baseUrl, currentSettings.requestTimeoutSeconds)
+                val llmApi = NetworkModule
+                    .provideLLMRetrofit(currentSettings.baseUrl, currentSettings.requestTimeoutSeconds)
+                    .create(LLMApi::class.java)
                 val solver = LLMSolver(llmApi, currentSettings)
                 ExamRunner(get(), get(), solver, get(), currentSettings)
             }
