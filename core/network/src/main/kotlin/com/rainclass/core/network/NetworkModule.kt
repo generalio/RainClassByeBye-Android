@@ -51,7 +51,7 @@ object NetworkModule {
             .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC })
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
-            .followRedirects(true)
+            .followRedirects(false)
             .build()
 
         return Retrofit.Builder()

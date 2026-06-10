@@ -13,6 +13,13 @@ class GetHomeworkUseCase(private val api: RainClassApi) {
     }
 
     suspend fun getCover(cid: Long, examId: Long): Result<HomeworkCoverData> = runCatching {
-        api.getHomeworkCover(examId, cid).data
+        if (examId <= 0) {
+            throw Exception("无有效 Exam ID")
+        }
+        val response = api.getHomeworkCover(examId, cid)
+        if (!response.success) {
+            throw Exception(response.msg.ifEmpty { "考试信息获取失败: status=${response.status}" })
+        }
+        response.data
     }
 }

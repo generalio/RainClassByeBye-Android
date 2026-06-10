@@ -63,13 +63,40 @@ class ExamRunner(
             val tokenResp = rainClassApi.examGenToken(
                 ExamGenTokenRequest(examId.toString(), cid.toString())
             )
-            examApi.examLogin(examId, tokenResp.data.userId, tokenResp.data.token)
-            examApi.startExam(examId)
-            examApi.startExamPaper(StartExamPaperRequest(examId.toString()))
+            if (!tokenResp.success) {
+                throw Exception("生成考试 Token 失败: status=${tokenResp.status} ${tokenResp.msg}")
+            }
+            if (tokenResp.data.token.isBlank() || tokenResp.data.userId <= 0) {
+                throw Exception("生成考试 Token 失败: 返回凭证为空")
+            }
+
+            val nextUrl = "https://changjiang-exam.yuketang.cn/start/$examId?isFrom=2"
+            val loginResp = examApi.examLogin(
+                examId = examId,
+                userId = tokenResp.data.userId,
+                crypt = tokenResp.data.token,
+                next = nextUrl
+            )
+            if (loginResp.code() != 302) {
+                throw Exception("考试登录失败: HTTP ${loginResp.code()}")
+            }
+
+            val startResp = examApi.startExam(examId)
+            if (!startResp.isSuccessful) {
+                throw Exception("进入考试失败: HTTP ${startResp.code()}")
+            }
+
+            val startPaperResp = examApi.startExamPaper(StartExamPaperRequest(examId.toString()))
+            if (startPaperResp.errcode != 0) {
+                throw Exception("开始试卷失败: errcode=${startPaperResp.errcode}")
+            }
             addLog(LogLevel.SUCCESS, "已进入考试环境")
 
             // Get questions
             val paper = examApi.getExamPaperQuestion(examId)
+            if (paper.errcode != 0) {
+                throw Exception("获取试卷失败: errcode=${paper.errcode}")
+            }
             val problems = paper.data.problems
             val title = paper.data.title
 

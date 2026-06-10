@@ -10,7 +10,8 @@ interface ExamApi {
         @Query("exam_id") examId: Long,
         @Query("user_id") userId: Long,
         @Query("crypt") crypt: String,
-        @Query("next") next: String = "/exam_room"
+        @Query("next") next: String,
+        @Query("language") language: String = "zh"
     ): Response<Unit>
 
     @GET("start/{examId}")

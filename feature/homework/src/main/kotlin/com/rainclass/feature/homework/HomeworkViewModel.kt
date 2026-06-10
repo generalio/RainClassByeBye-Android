@@ -20,7 +20,8 @@ data class HomeworkDetailUiState(
     val detail: HomeworkDetailData? = null,
     val cover: HomeworkCoverData? = null,
     val isLoading: Boolean = true,
-    val error: String? = null
+    val error: String? = null,
+    val startBlockedReason: String? = null
 )
 
 class HomeworkViewModel(
@@ -53,7 +54,13 @@ class HomeworkViewModel(
                         onSuccess = { cover ->
                             _detailState.value = HomeworkDetailUiState(detail = detail, cover = cover, isLoading = false)
                         },
-                        onFailure = { _detailState.value = HomeworkDetailUiState(detail = detail, isLoading = false) }
+                        onFailure = {
+                            _detailState.value = HomeworkDetailUiState(
+                                detail = detail,
+                                isLoading = false,
+                                startBlockedReason = it.message ?: "考试信息获取失败"
+                            )
+                        }
                     )
                 },
                 onFailure = { _detailState.value = HomeworkDetailUiState(error = it.message, isLoading = false) }

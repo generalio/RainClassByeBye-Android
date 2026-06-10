@@ -48,6 +48,7 @@ fun HomeworkDetailScreen(
             uiState.detail != null -> {
                 val detail = uiState.detail!!
                 val cover = uiState.cover
+                val canStart = cover != null && detail.contentInfo.leafTypeId > 0
 
                 Column(
                     modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
@@ -70,6 +71,10 @@ fun HomeworkDetailScreen(
                             if (cover.startTime > 0) InfoRow("考试开始", dateFormat.format(Date(cover.startTime)))
                             if (cover.deadline > 0) InfoRow("考试截止", dateFormat.format(Date(cover.deadline)))
                         }
+                    } else {
+                        InfoCard(title = "考试信息") {
+                            InfoRow("状态", uiState.startBlockedReason ?: "考试信息不可用")
+                        }
                     }
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -77,7 +82,8 @@ fun HomeworkDetailScreen(
                     Button(
                         onClick = { onStartExam(cid, detail.contentInfo.leafTypeId) },
                         modifier = Modifier.fillMaxWidth(),
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.medium,
+                        enabled = canStart
                     ) {
                         Text("开始自动答题", modifier = Modifier.padding(vertical = 4.dp))
                     }

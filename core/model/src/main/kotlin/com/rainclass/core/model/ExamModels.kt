@@ -5,6 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ExamGenTokenResponse(
+    val msg: String = "",
+    val status: Int = 0,
     val success: Boolean = false,
     val data: ExamTokenData = ExamTokenData()
 )
