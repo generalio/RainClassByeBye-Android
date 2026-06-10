@@ -9,7 +9,7 @@ import com.rainclass.feature.courses.model.repository.CoursesRepository
 import com.rainclass.feature.courses.viewmodel.CoursesViewModel
 import com.rainclass.feature.exam.model.api.ExamApi
 import com.rainclass.feature.exam.model.api.ExamTokenApi
-import com.rainclass.feature.exam.model.api.LLMApi
+import com.rainclass.core.network.llm.LlmClient
 import com.rainclass.feature.exam.model.repository.ExamRunner
 import com.rainclass.feature.exam.model.repository.LLMSolver
 import com.rainclass.feature.exam.viewmodel.ExamStatusViewModel
@@ -31,42 +31,54 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    single { NetworkModule.provideCookieStore(androidContext()) }
-    single { AppDatabase.getInstance(androidContext()) }
-    single { SettingsDataStore(androidContext()) }
+  single { NetworkModule.provideCookieStore(androidContext()) }
+  single { AppDatabase.getInstance(androidContext()) }
+  single { SettingsDataStore(androidContext()) }
 
-    single<LoginApi> { NetworkModule.provideRainClassRetrofit(get()).create(LoginApi::class.java) }
-    single<HomeApi> { NetworkModule.provideRainClassRetrofit(get()).create(HomeApi::class.java) }
-    single<CoursesApi> { NetworkModule.provideRainClassRetrofit(get()).create(CoursesApi::class.java) }
-    single<HomeworkApi> { NetworkModule.provideRainClassRetrofit(get()).create(HomeworkApi::class.java) }
-    single<ExamTokenApi> { NetworkModule.provideRainClassRetrofit(get()).create(ExamTokenApi::class.java) }
-    single<ExamApi> { NetworkModule.provideExamRetrofit(get()).create(ExamApi::class.java) }
+  single<LoginApi> {
+    NetworkModule.provideRainClassRetrofit(get()).create(LoginApi::class.java)
+  }
+  single<HomeApi> {
+    NetworkModule.provideRainClassRetrofit(get()).create(HomeApi::class.java)
+  }
+  single<CoursesApi> {
+    NetworkModule.provideRainClassRetrofit(get()).create(CoursesApi::class.java)
+  }
+  single<HomeworkApi> {
+    NetworkModule.provideRainClassRetrofit(get()).create(HomeworkApi::class.java)
+  }
+  single<ExamTokenApi> {
+    NetworkModule.provideRainClassRetrofit(get()).create(ExamTokenApi::class.java)
+  }
+  single<ExamApi> {
+    NetworkModule.provideExamRetrofit(get()).create(ExamApi::class.java)
+  }
 
-    single {
-        val cookieStore = get<PersistentCookieStore>()
-        LoginRepository(get(), NetworkModule.provideCookieClient(cookieStore))
-    }
-    single { HomeRepository(get()) }
-    single { CoursesRepository(get()) }
-    single { HomeworkRepository(get()) }
+  single {
+    val cookieStore = get<PersistentCookieStore>()
+    LoginRepository(get(), NetworkModule.provideCookieClient(cookieStore))
+  }
+  single { HomeRepository(get()) }
+  single { CoursesRepository(get()) }
+  single { HomeworkRepository(get()) }
 
-    viewModel { LoginViewModel(get()) }
-    viewModel { HomeViewModel(get()) }
-    viewModel { CoursesViewModel(get()) }
-    viewModel { HomeworkViewModel(get()) }
-    viewModel {
-        ExamViewModel(
-            examRunnerFactory = {
-                val settingsDataStore = get<SettingsDataStore>()
-                val currentSettings = runBlocking { settingsDataStore.settingsFlow.first() }
-                val llmApi = NetworkModule
-                    .provideLLMRetrofit(currentSettings.baseUrl, currentSettings.requestTimeoutSeconds)
-                    .create(LLMApi::class.java)
-                val solver = LLMSolver(llmApi, currentSettings)
-                ExamRunner(get(), get(), solver, get(), currentSettings)
-            }
+  viewModel { LoginViewModel(get()) }
+  viewModel { HomeViewModel(get()) }
+  viewModel { CoursesViewModel(get()) }
+  viewModel { HomeworkViewModel(get()) }
+  viewModel {
+    ExamViewModel(
+      examRunnerFactory = {
+        val settingsDataStore = get<SettingsDataStore>()
+        val currentSettings = runBlocking { settingsDataStore.settingsFlow.first() }
+        val solver = LLMSolver(
+          llmClient = LlmClient(currentSettings.requestTimeoutSeconds),
+          settings = currentSettings
         )
-    }
-    viewModel { ExamStatusViewModel(get()) }
-    viewModel { SettingsViewModel(get()) }
+        ExamRunner(get(), get(), solver, get(), currentSettings)
+      }
+    )
+  }
+  viewModel { ExamStatusViewModel(get()) }
+  viewModel { SettingsViewModel(get()) }
 }

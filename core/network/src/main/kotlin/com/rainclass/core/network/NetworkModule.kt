@@ -13,69 +13,54 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
 
 object NetworkModule {
-    private val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-        encodeDefaults = true
-    }
+  private val json = Json {
+    ignoreUnknownKeys = true
+    isLenient = true
+    encodeDefaults = true
+  }
 
-    fun provideCookieStore(context: Context): PersistentCookieStore {
-        return PersistentCookieStore(context)
-    }
+  fun provideCookieStore(context: Context): PersistentCookieStore {
+    return PersistentCookieStore(context)
+  }
 
-    fun provideCookieClient(cookieStore: PersistentCookieStore): OkHttpClient {
-        return OkHttpClient.Builder()
-            .cookieJar(cookieStore)
-            .build()
-    }
+  fun provideCookieClient(cookieStore: PersistentCookieStore): OkHttpClient {
+    return OkHttpClient.Builder()
+      .cookieJar(cookieStore)
+      .build()
+  }
 
-    fun provideRainClassRetrofit(cookieStore: PersistentCookieStore): Retrofit {
-        val client = OkHttpClient.Builder()
-            .cookieJar(cookieStore)
-            .addInterceptor(RainClassInterceptor(cookieStore))
-            .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC })
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .followRedirects(true)
-            .build()
+  fun provideRainClassRetrofit(cookieStore: PersistentCookieStore): Retrofit {
+    val client = OkHttpClient.Builder()
+      .cookieJar(cookieStore)
+      .addInterceptor(RainClassInterceptor(cookieStore))
+      .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC })
+      .connectTimeout(30, TimeUnit.SECONDS)
+      .readTimeout(60, TimeUnit.SECONDS)
+      .followRedirects(true)
+      .build()
 
-        return Retrofit.Builder()
-            .baseUrl("https://changjiang.yuketang.cn/")
-            .client(client)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
-    }
+    return Retrofit.Builder()
+      .baseUrl("https://changjiang.yuketang.cn/")
+      .client(client)
+      .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+      .build()
+  }
 
-    fun provideExamRetrofit(cookieStore: PersistentCookieStore): Retrofit {
-        val client = OkHttpClient.Builder()
-            .cookieJar(cookieStore)
-            .addInterceptor(ExamInterceptor())
-            .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC })
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .followRedirects(false)
-            .build()
+  fun provideExamRetrofit(cookieStore: PersistentCookieStore): Retrofit {
+    val client = OkHttpClient.Builder()
+      .cookieJar(cookieStore)
+      .addInterceptor(ExamInterceptor())
+      .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC })
+      .connectTimeout(30, TimeUnit.SECONDS)
+      .readTimeout(60, TimeUnit.SECONDS)
+      .followRedirects(false)
+      .build()
 
-        return Retrofit.Builder()
-            .baseUrl("https://changjiang-exam.yuketang.cn/")
-            .client(client)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
-    }
+    return Retrofit.Builder()
+      .baseUrl("https://changjiang-exam.yuketang.cn/")
+      .client(client)
+      .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+      .build()
+  }
 
-    fun provideLLMRetrofit(baseUrl: String, timeoutSeconds: Long): Retrofit {
-        val client = OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(timeoutSeconds, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
-
-        val url = if (baseUrl.endsWith("/")) baseUrl else "$baseUrl/"
-
-        return Retrofit.Builder()
-            .baseUrl(url)
-            .client(client)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
-    }
 }

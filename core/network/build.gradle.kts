@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:config"))
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     implementation(libs.retrofit)

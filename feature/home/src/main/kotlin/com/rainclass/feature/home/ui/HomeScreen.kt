@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ButtonDefaults
@@ -44,118 +44,131 @@ import com.rainclass.feature.home.viewmodel.HomeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel,
-    onNavigateToCourses: () -> Unit,
-    onNavigateToStatus: () -> Unit,
-    onNavigateToSettings: () -> Unit,
-    onLogout: () -> Unit
+  viewModel: HomeViewModel,
+  onNavigateToCourses: () -> Unit,
+  onNavigateToStatus: () -> Unit,
+  onNavigateToSettings: () -> Unit,
+  onLogout: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+  val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(uiState.authExpired) {
-        if (uiState.authExpired) onLogout()
+  LaunchedEffect(uiState.authExpired) {
+    if (uiState.authExpired) onLogout()
+  }
+
+  Scaffold(
+    topBar = {
+      RainClassTopBar(
+        title = "RainClassByeBye",
+        actions = {
+          IconButton(onClick = onNavigateToSettings) {
+            Icon(Icons.Default.Settings, contentDescription = "设置")
+          }
+        }
+      )
     }
+  ) { padding ->
+    Column(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding)
+        .padding(16.dp),
+      verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+      when {
+        uiState.isLoading -> LoadingIndicator()
+        uiState.error != null -> ErrorMessage(
+          uiState.error!!,
+          onRetry = { viewModel.loadUserInfo() }
+        )
+        uiState.user != null -> {
+          val user = uiState.user!!
 
-    Scaffold(
-        topBar = {
-            RainClassTopBar(
-                title = "雨课堂助手",
-                actions = {
-                    IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Default.Settings, contentDescription = "设置")
-                    }
-                }
+          InfoCard(title = "用户信息") {
+            InfoRow("姓名", user.name)
+            InfoRow("学号", user.schoolNumber)
+            InfoRow("学校", user.school)
+          }
+
+          Spacer(modifier = Modifier.height(8.dp))
+
+          HomeMenuItem(
+            icon = Icons.Default.School,
+            title = "我的课程",
+            subtitle = "查看课程列表和作业",
+            onClick = onNavigateToCourses
+          )
+
+          HomeMenuItem(
+            icon = Icons.AutoMirrored.Filled.Assignment,
+            title = "任务状态",
+            subtitle = "查看和恢复答题任务",
+            onClick = onNavigateToStatus
+          )
+
+          HomeMenuItem(
+            icon = Icons.Default.Settings,
+            title = "设置",
+            subtitle = "配置 AI 模型和 API Key",
+            onClick = onNavigateToSettings
+          )
+
+          Spacer(modifier = Modifier.weight(1f))
+
+          OutlinedButton(
+            onClick = onLogout,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.outlinedButtonColors(
+              contentColor = MaterialTheme.colorScheme.error
             )
+          ) {
+            Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("退出登录")
+          }
         }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            when {
-                uiState.isLoading -> LoadingIndicator()
-                uiState.error != null -> ErrorMessage(uiState.error!!, onRetry = { viewModel.loadUserInfo() })
-                uiState.user != null -> {
-                    val user = uiState.user!!
-
-                    InfoCard(title = "用户信息") {
-                        InfoRow("姓名", user.name)
-                        InfoRow("学号", user.schoolNumber)
-                        InfoRow("学校", user.school)
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    HomeMenuItem(
-                        icon = Icons.Default.School,
-                        title = "我的课程",
-                        subtitle = "查看课程列表和作业",
-                        onClick = onNavigateToCourses
-                    )
-
-                    HomeMenuItem(
-                        icon = Icons.AutoMirrored.Filled.Assignment,
-                        title = "任务状态",
-                        subtitle = "查看和恢复答题任务",
-                        onClick = onNavigateToStatus
-                    )
-
-                    HomeMenuItem(
-                        icon = Icons.Default.Settings,
-                        title = "设置",
-                        subtitle = "配置 AI 模型和 API Key",
-                        onClick = onNavigateToSettings
-                    )
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    OutlinedButton(
-                        onClick = onLogout,
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = MaterialTheme.colorScheme.error
-                        )
-                    ) {
-                        Icon(Icons.Default.Logout, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("退出登录")
-                    }
-                }
-            }
-        }
+      }
     }
+  }
 }
 
 @Composable
 private fun HomeMenuItem(
-    icon: ImageVector,
-    title: String,
-    subtitle: String,
-    onClick: () -> Unit
+  icon: ImageVector,
+  title: String,
+  subtitle: String,
+  onClick: () -> Unit
 ) {
-    Card(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+  Card(
+    onClick = onClick,
+    modifier = Modifier.fillMaxWidth(),
+    colors = CardDefaults.cardColors(
+      containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+    )
+  ) {
+    Row(
+      modifier = Modifier.padding(16.dp),
+      verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                icon, contentDescription = null,
-                modifier = Modifier.size(40.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(title, style = MaterialTheme.typography.titleMedium)
-                Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
+      Icon(
+        icon, contentDescription = null,
+        modifier = Modifier.size(40.dp),
+        tint = MaterialTheme.colorScheme.primary
+      )
+      Spacer(modifier = Modifier.width(16.dp))
+      Column(modifier = Modifier.weight(1f)) {
+        Text(title, style = MaterialTheme.typography.titleMedium)
+        Text(
+          text = subtitle,
+          style = MaterialTheme.typography.bodySmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+      }
+      Icon(
+        Icons.Default.ChevronRight,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onSurfaceVariant
+      )
     }
+  }
 }
