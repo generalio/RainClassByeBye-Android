@@ -6,22 +6,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -37,16 +34,13 @@ import androidx.compose.ui.unit.dp
 import com.rainclass.core.config.designsystem.component.ErrorMessage
 import com.rainclass.core.config.designsystem.component.LoadingIndicator
 import com.rainclass.core.config.designsystem.component.RainClassTopBar
-import com.rainclass.core.config.ui.InfoCard
-import com.rainclass.core.config.ui.InfoRow
 import com.rainclass.feature.home.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
   viewModel: HomeViewModel,
-  onNavigateToCourses: () -> Unit,
-  onNavigateToStatus: () -> Unit,
+  modifier: Modifier = Modifier,
   onNavigateToSettings: () -> Unit,
   onLogout: () -> Unit
 ) {
@@ -57,16 +51,8 @@ fun HomeScreen(
   }
 
   Scaffold(
-    topBar = {
-      RainClassTopBar(
-        title = "RainClassByeBye",
-        actions = {
-          IconButton(onClick = onNavigateToSettings) {
-            Icon(Icons.Default.Settings, contentDescription = "设置")
-          }
-        }
-      )
-    }
+    modifier = modifier,
+    topBar = { RainClassTopBar(title = "个人") }
   ) { padding ->
     Column(
       modifier = Modifier
@@ -84,26 +70,10 @@ fun HomeScreen(
         uiState.user != null -> {
           val user = uiState.user!!
 
-          InfoCard(title = "用户信息") {
-            InfoRow("姓名", user.name)
-            InfoRow("学号", user.schoolNumber)
-            InfoRow("学校", user.school)
-          }
-
-          Spacer(modifier = Modifier.height(8.dp))
-
-          HomeMenuItem(
-            icon = Icons.Default.School,
-            title = "我的课程",
-            subtitle = "查看课程列表和作业",
-            onClick = onNavigateToCourses
-          )
-
-          HomeMenuItem(
-            icon = Icons.AutoMirrored.Filled.Assignment,
-            title = "任务状态",
-            subtitle = "查看和恢复答题任务",
-            onClick = onNavigateToStatus
+          ProfileHeader(
+            name = user.name.ifBlank { "RainClass 用户" },
+            school = user.school,
+            schoolNumber = user.schoolNumber
           )
 
           HomeMenuItem(
@@ -129,6 +99,77 @@ fun HomeScreen(
         }
       }
     }
+  }
+}
+
+@Composable
+private fun ProfileHeader(
+  name: String,
+  school: String,
+  schoolNumber: String
+) {
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    colors = CardDefaults.cardColors(
+      containerColor = MaterialTheme.colorScheme.primaryContainer
+    )
+  ) {
+    Column(
+      modifier = Modifier.padding(18.dp),
+      verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+      Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+          Icons.Default.AccountCircle,
+          contentDescription = null,
+          modifier = Modifier.size(52.dp),
+          tint = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+        Spacer(modifier = Modifier.width(14.dp))
+        Column {
+          Text(
+            text = name,
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+          )
+          Text(
+            text = school.ifBlank { "未获取学校信息" },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+          )
+        }
+      }
+
+      Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+      ) {
+        ProfileInfoRow(label = "姓名", value = name)
+        ProfileInfoRow(label = "学号", value = schoolNumber.ifBlank { "未获取" })
+        ProfileInfoRow(label = "学校", value = school.ifBlank { "未获取" })
+      }
+    }
+  }
+}
+
+@Composable
+private fun ProfileInfoRow(
+  label: String,
+  value: String
+) {
+  Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.SpaceBetween
+  ) {
+    Text(
+      text = label,
+      style = MaterialTheme.typography.bodyMedium,
+      color = MaterialTheme.colorScheme.onPrimaryContainer
+    )
+    Text(
+      text = value,
+      style = MaterialTheme.typography.bodyMedium,
+      color = MaterialTheme.colorScheme.onPrimaryContainer
+    )
   }
 }
 

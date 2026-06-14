@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,37 +39,48 @@ import java.util.Locale
 @Composable
 fun ExamStatusScreen(
   viewModel: ExamStatusViewModel,
-  onBackClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  onBackClick: (() -> Unit)?,
   onResume: (Long, Long) -> Unit
 ) {
   val states by viewModel.states.collectAsState()
+  val isRefreshing by viewModel.isRefreshing.collectAsState()
 
   Scaffold(
+    modifier = modifier,
     topBar = { RainClassTopBar(title = "任务状态", onBackClick = onBackClick) }
   ) { padding ->
-    if (states.isEmpty()) {
-      Column(
-        modifier = Modifier
-          .fillMaxSize()
-          .padding(padding)
-          .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-      ) {
-        Text("暂无任务记录", style = MaterialTheme.typography.titleMedium)
-      }
-    } else {
-      LazyColumn(
-        modifier = Modifier.padding(padding),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-      ) {
-        items(states, key = { it.id }) { state ->
-          ExamStateItem(
-            state = state,
-            onResume = { onResume(state.cid, state.examId) },
-            onDelete = { viewModel.delete(state) }
-          )
+    PullToRefreshBox(
+      isRefreshing = isRefreshing,
+      onRefresh = { viewModel.refresh() },
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding)
+    ) {
+      if (states.isEmpty()) {
+        LazyColumn(
+          modifier = Modifier.fillMaxSize(),
+          contentPadding = PaddingValues(24.dp),
+          verticalArrangement = Arrangement.Center,
+          horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+          item {
+            Text("暂无任务记录", style = MaterialTheme.typography.titleMedium)
+          }
+        }
+      } else {
+        LazyColumn(
+          modifier = Modifier.fillMaxSize(),
+          contentPadding = PaddingValues(16.dp),
+          verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+          items(states, key = { it.id }) { state ->
+            ExamStateItem(
+              state = state,
+              onResume = { onResume(state.cid, state.examId) },
+              onDelete = { viewModel.delete(state) }
+            )
+          }
         }
       }
     }
